@@ -1,0 +1,20 @@
+# .NET Core
+bin/
+obj/
+Publish/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.db
+.env
+venv/
+env/
+
+Backups/
+Output/
