@@ -1,0 +1,130 @@
+<Window x:Class="SecurityMonitor.Commander.Desktop.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
+        xmlns:tb="clr-namespace:Hardcodet.Wpf.TaskbarNotification;assembly=Hardcodet.NotifyIcon.Wpf"
+        mc:Ignorable="d"
+        Title="Security Monitor - Comandante" Height="700" Width="1000"
+        WindowStartupLocation="CenterScreen"
+        Background="#f0f2f5">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header Personalizado -->
+        <Border Grid.Row="0" Background="#2c3e50" Padding="15">
+            <Grid>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="SECURITY MONITOR" Foreground="White" FontSize="20" FontWeight="Bold" VerticalAlignment="Center"/>
+                    <TextBlock Text=" | Comandante" Foreground="#bdc3c7" FontSize="16" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Content="Refrescar" Click="Refresh_Click" Padding="10,5" Background="#34495e" Foreground="White" BorderThickness="0" Cursor="Hand" Margin="0,0,10,0"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Contenido con Pestañas -->
+        <TabControl Grid.Row="1" Background="Transparent" BorderThickness="0">
+            <TabItem Header="Dashboard">
+                <wv2:WebView2 x:Name="webView" Source="http://localhost:5000"/>
+            </TabItem>
+            <TabItem Header="Configuración">
+                <ScrollViewer Padding="20">
+                    <StackPanel MaxWidth="500" HorizontalAlignment="Left">
+                        <TextBlock Text="Ajustes del Comandante" FontSize="18" FontWeight="Bold" Margin="0,0,0,20"/>
+                        <TextBlock Text="Configuración de Red" FontWeight="Bold" Margin="0,15,0,10"/>
+                        <TextBlock Text="Red WiFi Autorizada (SSID):" Margin="0,0,0,5"/>
+                        <TextBox x:Name="txtAuthorizedSsid" Padding="5" Margin="0,0,0,15"/>
+                        
+                        <TextBlock Text="Configuración de Geocerca (Ubicación Base)" FontWeight="Bold" Margin="0,15,0,10"/>
+                        <Grid Margin="0,0,0,15">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="10"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Latitud:" Margin="0,0,0,5"/>
+                                <TextBox x:Name="txtLatitude" Padding="5"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="Longitud:" Margin="0,0,0,5"/>
+                                <TextBox x:Name="txtLongitude" Padding="5"/>
+                            </StackPanel>
+                        </Grid>
+                        <TextBlock Text="Radio Permitido (metros):" Margin="0,0,0,5"/>
+                        <TextBox x:Name="txtRadius" Padding="5" Margin="0,0,0,15"/>
+
+                        <TextBlock Text="Ajustes Generales y Temas" FontWeight="Bold" Margin="0,15,0,10"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                            <TextBlock Text="Tema de la Interfaz (HTML): " VerticalAlignment="Center"/>
+                            <ComboBox Width="150" SelectedIndex="0">
+                                <ComboBoxItem Content="Modo Oscuro (Por defecto)"/>
+                                <ComboBoxItem Content="Modo Claro"/>
+                                <ComboBoxItem Content="Modo Matrix (Terminal)"/>
+                            </ComboBox>
+                        </StackPanel>
+                        <CheckBox x:Name="chkMuteAlerts" Content="Silenciar alertas de sonido" Margin="0,0,0,10"/>
+                        <CheckBox x:Name="chkDarkMode" Content="Activar Modo Oscuro (UI Principal de Windows)" Margin="0,0,0,15"/>
+
+                        <TextBlock Text="Despliegue Cloud (Próximamente)" FontWeight="Bold" Margin="0,15,0,10" Foreground="#2980b9"/>
+                        <TextBlock Text="Endpoint URL (VPS):" Margin="0,0,0,5" Foreground="#7f8c8d"/>
+                        <TextBox IsEnabled="False" Text="https://api.tudominio.com/heartbeat" Padding="5" Margin="0,0,0,10"/>
+                        <TextBlock Text="Token de API:" Margin="0,0,0,5" Foreground="#7f8c8d"/>
+                        <TextBox IsEnabled="False" Text="*******************" Padding="5" Margin="0,0,0,20"/>
+
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
+                            <Button Content="Limpiar Logs de Eventos" Padding="10,5" Margin="0,0,10,0"/>
+                            <Button Content="Forzar Escaneo de Red" Padding="10,5"/>
+                        </StackPanel>
+                        
+                        <Button Content="Guardar Configuración" Click="SaveConfig_Click" Padding="15,8" Background="#27ae60" Foreground="White" BorderThickness="0" FontWeight="Bold"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+            <TabItem Header="Logs de Eventos en Vivo">
+                <Grid>
+                    <DataGrid x:Name="dgLogs" Margin="10" AutoGenerateColumns="False" IsReadOnly="True" HeadersVisibility="Column" GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="#333" Background="#1e1e1e" Foreground="#dcdcdc" RowBackground="#1e1e1e" AlternatingRowBackground="#252526">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Equipo" Binding="{Binding MachineName}" Width="150" FontWeight="Bold"/>
+                            <DataGridTextColumn Header="IP Local" Binding="{Binding IpAddress}" Width="120"/>
+                            <DataGridTextColumn Header="Red Activa" Binding="{Binding ConnectionInfo}" Width="150"/>
+                            <DataGridTextColumn Header="Último Pulso" Binding="{Binding LastSeenText}" Width="100"/>
+                            <DataGridTextColumn Header="Estado" Binding="{Binding Status}" Width="*"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+        </TabControl>
+
+        <!-- Barra de Estado -->
+        <StatusBar Grid.Row="2" Background="White" BorderBrush="#ddd" BorderThickness="0,1,0,0">
+            <StatusBarItem>
+                <StackPanel Orientation="Horizontal">
+                    <Ellipse x:Name="statusCircle" Width="10" Height="10" Fill="Green" Margin="5,0"/>
+                    <TextBlock x:Name="statusText" Text="Servidor Activo (Puerto 5000)"/>
+                </StackPanel>
+            </StatusBarItem>
+        </StatusBar>
+
+        <!-- Icono de Bandeja -->
+        <tb:TaskbarIcon x:Name="notifyIcon"
+                        IconSource="Assets/security_monitor_logo.png"
+                        ToolTipText="Security Monitor Comandante"
+                        DoubleClickCommand="{Binding ShowWindowCommand}">
+            <tb:TaskbarIcon.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Abrir Dashboard" Click="OpenWindow_Click" />
+                    <Separator />
+                    <MenuItem Header="Salir" Click="ExitApp_Click" />
+                </ContextMenu>
+            </tb:TaskbarIcon.ContextMenu>
+        </tb:TaskbarIcon>
+    </Grid>
+</Window>
