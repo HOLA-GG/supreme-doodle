@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso al Sistema | Security Monitor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #05080f;
+            --card-bg: #111827;
+            --accent-color: #3b82f6;
+            --accent-hover: #2563eb;
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            --border-color: #1e293b;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: radial-gradient(circle at top, #1e3a8a 0%, #05080f 80%);
+        }
+        .login-card {
+            background: var(--card-bg);
+            padding: 3rem;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .logo {
+            text-align: center;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            letter-spacing: -1px;
+        }
+        .logo span { color: var(--accent-color); }
+
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: white;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            background: rgba(255,255,255,0.1);
+        }
+        button {
+            width: 100%;
+            padding: 1rem;
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 1rem;
+        }
+        button:hover { background: var(--accent-hover); }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 1.5rem;
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        .back-link:hover { color: white; }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <div class="logo">Security<span>Monitor</span></div>
+        <form method="POST" action="/login">
+            <div class="form-group">
+                <label for="account_id">ID de Organización (Account ID)</label>
+                <input type="text" id="account_id" name="account_id" placeholder="Ej: MI_EMPRESA_123" required autocomplete="off">
+            </div>
+            <button type="submit">Ingresar al Dashboard</button>
+        </form>
+        <a href="/" class="back-link">&larr; Volver al inicio</a>
+    </div>
+</body>
+</html>

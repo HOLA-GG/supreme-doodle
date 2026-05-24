@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Monitor | Cloud Commander</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        :root {
+            --bg-color: #0a0e14;
+            --card-bg: #151c27;
+            --accent-color: #3498db;
+            --danger-color: #e74c3c;
+            --success-color: #2ecc71;
+            --text-main: #e0e6ed;
+            --text-dim: #94a3b8;
+            --border-color: #2d3748;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            background: rgba(21, 28, 39, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo { font-weight: 700; font-size: 1.5rem; color: var(--accent-color); letter-spacing: -1px; }
+        .logo span { color: white; }
+
+        .container { padding: 2rem 5%; max-width: 1400px; margin: 0 auto; }
+
+        /* Header Info */
+        .cloud-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 3rem;
+            background: linear-gradient(135deg, #151c27 0%, #0a0e14 100%);
+            border-radius: 15px;
+            border: 1px solid var(--border-color);
+        }
+        .cloud-header h1 { font-size: 2.5rem; margin-bottom: 1rem; }
+        .cloud-header p { color: var(--text-dim); max-width: 700px; margin: 0 auto; }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .stat-card {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-left: 4px solid var(--accent-color);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        .stat-card h3 { font-size: 0.8rem; color: var(--text-dim); text-transform: uppercase; margin-bottom: 0.5rem; }
+        .stat-card .value { font-size: 1.8rem; font-weight: 700; }
+
+        /* Soldier Table */
+        .table-container {
+            background: var(--card-bg);
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+        table { width: 100%; border-collapse: collapse; }
+        th {
+            text-align: left;
+            padding: 1.2rem;
+            background: rgba(255,255,255,0.05);
+            color: var(--text-dim);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+        }
+        td { padding: 1.2rem; border-bottom: 1px solid var(--border-color); font-size: 0.9rem; }
+        tr:hover { background: rgba(255,255,255,0.02); }
+
+        .badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .badge-online { background: rgba(46, 204, 113, 0.2); color: var(--success-color); }
+        .badge-alarm { background: rgba(231, 76, 60, 0.2); color: var(--danger-color); animation: pulse 2s infinite; }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .hw-id { font-family: monospace; color: var(--accent-color); background: rgba(52, 152, 219, 0.1); padding: 2px 5px; border-radius: 4px; }
+
+        footer { text-align: center; padding: 2rem; color: var(--text-dim); font-size: 0.8rem; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">SECURITY<span>MONITOR</span></div>
+        <div style="display: flex; align-items: center; gap: 2rem;">
+            <div class="status" style="color: var(--accent-color); font-weight: 600;">ORG: {{ account_name }}</div>
+            <a href="/" style="color: var(--text-dim); text-decoration: none; font-size: 0.9rem; border: 1px solid var(--border-color); padding: 0.4rem 1rem; border-radius: 5px;">Cerrar Sesión</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header class="cloud-header">
+            <h1>Panel de Control (Nube)</h1>
+            <p>Monitoreo centralizado para despliegues masivos. Los soldados reportan desde cualquier red (WiFi/4G/5G) y la nube valida su integridad mediante HWID y encriptación de grado militar.</p>
+        </header>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Total Soldados</h3>
+                <div class="value">{{ soldiers|length }}</div>
+            </div>
+            <div class="stat-card" style="border-left-color: var(--success-color)">
+                <h3>En Línea</h3>
+                <div class="value">{{ soldiers|length }}</div>
+            </div>
+            <div class="stat-card" style="border-left-color: var(--danger-color)">
+                <h3>Alertas Activas</h3>
+                <div class="value">0</div>
+            </div>
+            <div class="stat-card" style="border-left-color: #f1c40f">
+                <h3>Última Actualización</h3>
+                <div class="value" style="font-size: 1.2rem; margin-top: 0.5rem;">{{ now }}</div>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Estado</th>
+                        <th>Soldado / HWID</th>
+                        <th>MAC de Fábrica</th>
+                        <th>IP / Red</th>
+                        <th>Conexión</th>
+                        <th>Reporte</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for soldier in soldiers %}
+                    <tr>
+                        <td>
+                            {% if soldier.is_alarm == 1 %}
+                                <span class="badge badge-alarm">ALERTA</span>
+                            {% else %}
+                                <span class="badge badge-online">SEGURO</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div style="font-weight: 600;">{{ soldier.hostname }}</div>
+                            <div class="hw-id">{{ soldier.hw_id[:16] }}...</div>
+                        </td>
+                        <td style="font-family: monospace;">{{ soldier.mac_address }}</td>
+                        <td>
+                            <div>{{ soldier.local_ip }}</div>
+                            <div style="font-size: 0.75rem; color: var(--text-dim);">{{ soldier.ssid }}</div>
+                        </td>
+                        <td>{{ soldier.connection_type }}</td>
+                        <td>{{ soldier.last_seen }}</td>
+                    </tr>
+                    {% endfor %}
+                    {% if not soldiers %}
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: 3rem; color: var(--text-dim);">
+                            Esperando primer reporte de soldados...
+                        </td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2026 Security Monitor Infrastructure. Desplegado para PythonAnywhere.
+    </footer>
+</body>
+</html>
